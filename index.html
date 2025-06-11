@@ -5,27 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="main.css">
+    <script src="script.js" defer></script>
+
 </head>
 <body>
     <div class="container">
        <h1 >Book Management System</h1>
      <h1>Add a book</h1>
-    <form>
+    <form id="bms-form">
        
         <label for="title">Title: </label><br>
-        <input type="text" required placeholder="Enter a title" id="title" name="title"><br><br>
+        <input type="text" placeholder="Enter a title" id="title" name="title"><br><br>
 
         <label for="author">Author: </label><br>
-        <input type="text" required placeholder="Enter author's name" id="author" name="author"><br><br>
+        <input type="text" placeholder="Enter author's name" id="author" name="author"><br><br>
 
         <label for="isbn">ISBN: </label><br>
-        <input type="text" required pattern="[0-9]{13}" maxlength=13 placeholder="Enter ISBN - 13 digits" id="isbn" name="isbn"><br><br>
+        <input type="text" pattern="[0-9]{13}" maxlength=13 placeholder="Enter ISBN - 13 digits" id="isbn" name="isbn"><br><br>
 
         <label for="pub-date">Publication Date: </label><br>
         <input type="date" placeholder="Enter publication date"id="pub-date" name="pub-date" required><br><br>
 
         <label for="genre">Genre: </label><br>
-        <select id="genre" name="genre" required>
+        <select id="genre" name="genre">
             <option value="" selected>Select genre</option>
             <option value="fiction">Fiction</option>
             <option value="non-fiction">Non-fiction</option>
@@ -38,8 +40,11 @@
             <option value="self-help">Self-help</option>
         </select>
 
-        <button> SUBMIT</button>
+        <button type="submit" id="submit"> SUBMIT</button>
     </form>
+    
+    <a href="booklist.html">View Book List</a>
+
     </div>
 </body>
 </html>
