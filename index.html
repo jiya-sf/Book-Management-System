@@ -5,46 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="main.css">
-    <script src="script.js" defer></script>
+      <script src="script.js"></script>
+  <link rel="stylesheet" href="output.css" />
 
 </head>
 <body>
-    <div class="container">
-       <h1 >Book Management System</h1>
-     <h1>Add a book</h1>
-    <form id="bms-form">
-       
-        <label for="title">Title: </label><br>
-        <input type="text" placeholder="Enter a title" id="title" name="title"><br><br>
-
-        <label for="author">Author: </label><br>
-        <input type="text" placeholder="Enter author's name" id="author" name="author"><br><br>
-
-        <label for="isbn">ISBN: </label><br>
-        <input type="text" pattern="[0-9]{13}" maxlength=13 placeholder="Enter ISBN - 13 digits" id="isbn" name="isbn"><br><br>
-
-        <label for="pub-date">Publication Date: </label><br>
-        <input type="date" placeholder="Enter publication date"id="pub-date" name="pub-date" required><br><br>
-
-        <label for="genre">Genre: </label><br>
-        <select id="genre" name="genre">
-            <option value="" selected>Select genre</option>
-            <option value="fiction">Fiction</option>
-            <option value="non-fiction">Non-fiction</option>
-            <option value="mystery">Mystery</option>
-            <option value="fantasy">Fantasy</option>
-            <option value="science-fiction">Science Fiction</option>
-            <option value="biography">Biography</option>
-            <option value="history">History</option>
-            <option value="romance">Romance</option>
-            <option value="self-help">Self-help</option>
-        </select>
-
-        <button type="submit" id="submit"> SUBMIT</button>
-    </form>
+    <!-- bg-[#2a2b2a] bg-[#5a5a5b] bg-[#3e3e3f]-->
+<div class=" text-white min-h-screen  w-full bg-[url('./images/b8.png')] bg-cover bg-center bg-[#5a5a5b] bg-blend-overlay px-4 sm:px-10 md:px-20 py-5">
+    <nav class="flex flex-col md:flex-row items-center">
+            <div class="text-2xl w-full md:w-auto text-center md:text-left mb-4 md:mb-0">Book Management System</div>
     
-    <a href="booklist.html">View Book List</a>
+
+            <ul id="navmenu" class="md:flex md:flex-1 justify-end text-center md:text-right">
+                <li class="list-none inline-block px-7"><a href="index.html" class="no-underline px-2 hover:text-gray-300">Home</a></li>
+                <li class="list-none inline-block px-7"><a href="formmain.html" class="no-underline px-2">Adding a book</a></li>
+                <li class="list-none inline-block px-7"><a href="booklist.html" class="no-underline px-2">BookList</a></li>
+            </ul>
+
+        </nav>
+
+
+        <div class="text-[#ffffff] mt-10 md:mt-20  max-w-xl bg-gray/10 backdrop-blur-sm p-10 rounded-xl">
+            <h1 class="text-xl font-semibold ">Book Manager</h1>
+       <!-- <h2 class="text-lg"> -->
+           <p class="text-lg "><br>Add. View. Edit. Done.<br>A simple tool to organize your book collection:<br>
+            ➕ Add new books with details<br> 👀 View your entire library<br> ✏️ Edit or ❌ Delete entries
+</p> 
+<!-- </h2>  -->
+        </div>
 
     </div>
+   
 </body>
 </html>
