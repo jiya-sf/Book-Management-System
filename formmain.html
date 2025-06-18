@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Add a Book</title>
   <link rel="stylesheet" href="main.css" />
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+  <script src="bookInfo.js"></script>
 
   <script src="script.js"></script>
   <link rel="stylesheet" href="output.css" />
@@ -75,9 +76,18 @@
         <option value="history" class="text-black">History</option>
         <option value="horror" class="text-black">Horror</option>
         <option value="self-help" class="text-black">Self-help</option>
-      </select>
+      </select>    
     </div>
-
+    <div class="relative z-0 w-full group">
+    <select id="book-type" name="book-type" required
+        class="py-2.5 w-full bg-transparent text-white border-b-2 border-gray-300 focus:outline-none focus:border-blue-400 text-sm">
+        <option value="" selected class="text-black">Select book type</option>
+        <option value="ebook" class="text-black">Ebook</option>
+        <option value="print" class="text-black">PrintedBook</option>
+      </select>   
+  
+  
+    </div>
     <div class="flex space-x-4">
       <button type="submit"
         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center">

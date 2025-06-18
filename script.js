@@ -1,4 +1,5 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {    
+    
     const form=document.getElementById("bms-form");
     const editCheck=parseInt(localStorage.getItem("editCheck"));
     const editBook=JSON.parse(localStorage.getItem("editBook"));
@@ -8,6 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("isbn").value = editBook.isbn;
         document.getElementById("pub-date").value = editBook.pubDate;
         document.getElementById("genre").value = editBook.genre;
+        document.getElementById("book-type").value = editBook.format === "digital" ? "ebook" : "print";
+
     }
 
     form.addEventListener("submit", async(e) => {
@@ -17,11 +20,18 @@ document.addEventListener("DOMContentLoaded", () => {
         const isbn=document.getElementById("isbn").value;
         const pubDate=document.getElementById("pub-date").value;
         const genre=document.getElementById("genre").value;
-        if (!title|| !author|| !isbn|| !pubDate|| genre === "") {
+                const bookType = document.getElementById("book-type").value;
+
+        if (!title|| !author|| !isbn|| !pubDate|| genre=== ""|| bookType=== "") {
             alert("Please fill in all fields");
             return;
         }
-        const newBook={ title, author, isbn, pubDate, genre };
+        let newBook;
+        if (bookType === "ebook") {
+            newBook = new Ebook(title, author, isbn, pubDate, genre);
+        } else {
+            newBook = new PrintedBook(title, author, isbn, pubDate, genre);
+        }
         try{
             const updatedBooks= await saveBooks(newBook,editCheck);
             localStorage.setItem("books",JSON.stringify(updatedBooks));

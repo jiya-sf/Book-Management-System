@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <script src="script.js" ></script>
+        
+    <title>Add a Book</title>
+
+</head> 
+<body class="bg-gray-100 min-h-screen flex items-center justify-center px-4 ">
+
+<form class="bg-white p-8 rounded-2xl shadow-md w-full max-w-xl space-y-6 max-w-md mx-auto" id="bms-form">
+    <h1 class="text-3xl font-bold mb-4 text-center text-gray-800">Book Management System</h1>
+    <h2 class="text-2xl font-semibold mb-6 text-center text-gray-700">Add a book</h2>
+  <div class="relative z-0 w-full mb-5 group">
+      <input type="text" name="title" id="title" class="peer w-full border-b-2 border-gray-600 bg-transparent text-gray-900 placeholder-transparent focus:outline-none focus:border-blue-600 text-sm pt-6 pb-1"  placeholder="" required />
+      <label for="title"
+            class="absolute text-gray-500 text-sm left-0 top-1 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-1 peer-focus:text-sm peer-focus:text-blue-600">Title</label>
+  </div>
+  <div class="relative z-0 w-full mb-5 group">
+      <input type="text" name="author" id="author" 
+      class="peer w-full border-b-2 border-gray-600 bg-transparent text-gray-900 placeholder-transparent focus:outline-none focus:border-blue-600 text-sm pt-6 pb-1"  placeholder=" " required />
+      <label for="author"         class="absolute text-gray-500 text-sm left-0 top-1 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-1 peer-focus:text-sm peer-focus:text-blue-600">Author</label>
+  </div>
+  <div class="relative z-0 w-full mb-5 group">
+      <input type="number"   pattern="[0-9]{13}" maxlength=13 name="isbn" id="isbn" 
+      class="peer w-full border-b-2 border-gray-600 bg-transparent text-gray-900 placeholder-transparent focus:outline-none focus:border-blue-600 text-sm pt-6 pb-1" placeholder=" " required />
+      <label for="isbn"
+               class="absolute text-gray-500 text-sm left-0 top-1 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-1 peer-focus:text-sm peer-focus:text-blue-600">ISBN</label>
+  </div>
+    <div class="relative z-0 w-full mb-5 group">
+        <input type="date" name="pub-date" id="pub-date" 
+        class="peer w-full border-b-2 border-gray-600 bg-transparent text-gray-900 placeholder-transparent focus:outline-none focus:border-blue-600 text-sm pt-6 pb-1" placeholder=" " required />
+        <label for="pub-date"         class="absolute text-gray-500 text-sm left-0 top-1 transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-focus:top-1 peer-focus:text-sm peer-focus:text-blue-600">Publication Date</label>
+    </div>
+
+        <div class="relative z-0 w-full mb-5 group">
+    <!-- <label for="genre"  class="text-sm text-gray-500">&nbsp;Genre</label><br> -->
+        <select id="genre" name="genre" class="mb-2 py-2.5 w-full text-sm text-gray-700 border-b-2 border-gray-700 focus:outline-none  focus:border-blue-800 ">
+        <!-- <select id="genre" name="genre" class="bg-gray-200 text-gray-900 text-sm w-full p-2.5  "> -->
+            <option value="" selected>Select genre</option>
+            <option value="fiction">Fiction</option>
+            <option value="non-fiction">Non-fiction</option>
+            <option value="mystery">Mystery</option>
+            <option value="fantasy">Fantasy</option>
+            <option value="science-fiction">Science Fiction</option>
+            <option value="biography">Biography</option>
+            <option value="history">History</option>
+            <option value="horror">Horror</option>
+            <option value="self-help">Self-help</option>
+        </select>
+
+  </div>
+
+      <div class="flex space-x-4">
+        <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center">Submit</button>
+        <a href="booklist.html" class="text-white bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center inline-block text-center">View Book List</a>
+    </div>
+</form>
+
+</body>
+</html>
+
+
