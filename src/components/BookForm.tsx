@@ -29,6 +29,10 @@ function BookForm() {
 
   const handleSubmit=async(e:React.FormEvent) =>{
     e.preventDefault();
+    if (formData.isbn.toString().length !== 13) {
+      alert('ISBN must be exactly 13 digits.');
+      return;
+    }
     try {
       const index=localStorage.getItem("editCheck");
       await bookService.saveBook(formData,index!==null?parseInt(index):null);
