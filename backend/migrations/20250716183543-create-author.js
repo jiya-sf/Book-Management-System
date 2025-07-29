@@ -7,6 +7,7 @@ module.exports = {
       await queryInterface.createTable('Authors',{
       id:{
         type:Sequelize.INTEGER,
+        autoIncrement: true,
         allowNull:false,
         primaryKey:true
       },
@@ -14,6 +15,16 @@ module.exports = {
         type:Sequelize.STRING(100),
         allowNull:false
       },
+      createdAt: {
+    allowNull: false,
+    type: Sequelize.DATE,
+    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+  },
+  updatedAt: {
+    allowNull: false,
+    type: Sequelize.DATE,
+    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
+  },
     },{transaction});
     });
   },

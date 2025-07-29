@@ -1,50 +1,34 @@
-import type {BookData} from './bookInfo.js';
+// src/utils/bookService.ts
+import { api } from './api'; 
+import type { NewBookData,BookData } from './bookInfo';
 
 export class BookService {
-  getBooks():Promise<BookData[]>{
-    return new Promise((resolve,reject) =>{
-      setTimeout(()=>{
-        try{
-          const books:BookData[]=JSON.parse(localStorage.getItem("books")||"[]");
-          resolve(books);
-        } catch(err){
-          reject(err);
-        }
-      },1000);
-    });
+  // get all books
+  async getBooks(): Promise<BookData[]> {
+    const response = await api.get('/api/books');
+    return response.data;
   }
 
-  saveBooks(books:BookData[]):void {
-    localStorage.setItem("books",JSON.stringify(books));
+  // get book by ID
+  async getBookById(id: number): Promise<BookData> {
+    const response = await api.get(`/api/books/${id}`);
+    return response.data;
   }
 
-  saveBook(book:BookData,index:number|null):Promise<BookData[]>{
-    return new Promise((resolve,reject)=>{
-      try{
-        const books:BookData[]=JSON.parse(localStorage.getItem("books")||"[]");
-        if (index!==null && !isNaN(index)){
-          books[index] = book;
-        } else{
-          books.push(book);
-        }
-        this.saveBooks(books);
-        resolve(books);
-      } catch (err){
-        reject(err);
-      }
-    });
+  // adding
+  async addBook(bookData: NewBookData): Promise<BookData> {
+    const response = await api.post('/api/books', bookData);
+    return response.data;
   }
 
-  deleteBook(index:number):void {
-    const books:BookData[]=JSON.parse(localStorage.getItem("books")||"[]");
-    books.splice(index,1);
-    this.saveBooks(books);
+  // update an existing book
+  async updateBook(id: number, bookData: NewBookData): Promise<BookData> {
+    const response = await api.put(`/api/books/${id}`,  bookData);
+    return response.data;
   }
-
-  EditBook(index:number):void {
-    const books:BookData[]=JSON.parse(localStorage.getItem("books")||"[]");
-    const editBook=books[index];
-    localStorage.setItem("editCheck",index.toString());
-    localStorage.setItem("editBook",JSON.stringify(editBook));
+  //delete book by id
+  async deleteBook(id: number): Promise<void> {
+    await api.delete(`/api/books/${id}`);
   }
 }
+

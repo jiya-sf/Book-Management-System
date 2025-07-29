@@ -4,11 +4,13 @@ export const AuthorModel=sequelize.define('Author', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
+    autoIncrement:true,
   },
   name: {
     type: DataTypes.STRING(100),
     allowNull: false,
   },
 }, {
-  tableName: 'Author'
+  tableName: 'Authors',
+   timestamps: true, 
 });

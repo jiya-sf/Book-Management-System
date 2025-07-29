@@ -1,10 +1,14 @@
-export interface BookData{
-    title:string;
-    author:string;
-    isbn:number;         
-    pubDate:string;       
-    genre:string;
-    bookType:'ebook'|'printed';
+export interface NewBookData {
+  title: string;
+  author: string;
+  isbn: number;
+  pubDate: string;
+  genre: string;
+  bookType: 'ebook' | 'printed';
+}
+
+export interface BookData extends NewBookData{
+    id:number;
 }
 
 export interface Author{
@@ -17,7 +21,7 @@ export interface Category{
     genre:string;
     description?:string;
 }
-export class Book implements BookData {
+export class Book implements NewBookData {
   title: string;
   author: string;
   isbn: number;
