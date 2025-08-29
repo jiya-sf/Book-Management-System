@@ -21,7 +21,9 @@ import {Author} from '../models/author.model';
 import {AuthorRepository} from '../repositories/author.repository';
 import axios from 'axios';
 import {LogExecution} from '../decorators/log.decorator';
+import {authenticate} from '@loopback/authentication';
 
+@authenticate('jwt')
 export class AuthorController {
   constructor(
     @repository(AuthorRepository)
@@ -162,19 +164,19 @@ export class AuthorController {
       'application/json': {
         schema: {
           type: 'array',
-          items: {type: 'object'}, // Or define a Book interface for precise typing
+          items: {type: 'object'},
         },
       },
     },
   })
-  async getBooksForAuthor(@param.path.number('id') id: number): Promise<any[]> {
+  async getBooksForAuthor(@param.path.number('id') id: number): Promise<{ bookId: number; title: string; authorId: number }[]> {
     await this.authorRepository.findById(id);
     try {
-      const response = await axios.get(
-        `http://localhost:3001/books?authorId=${id}`,
+      const response = await axios.get<{ bookId: number; title: string; authorId: number }[]>(
+      `http://localhost:3001/books?authorId=${id}`
       );
       return response.data;
-    } catch (error) {
+    } catch (error) { 
       return [];
     }
   }

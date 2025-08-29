@@ -16,12 +16,14 @@ import {
   del,
   requestBody,
   response,
+  HttpErrors,
 } from '@loopback/rest';
 import {Category} from '../models/category.model';
 import {CategoryRepository} from '../repositories/category.repository';
 import axios from 'axios';
 import {LogExecution} from '../decorators/log.decorator';
 
+// @authenticate('jwt')
 export class CategoryController {
   constructor(
     @repository(CategoryRepository)
@@ -47,7 +49,13 @@ export class CategoryController {
     })
     category: Omit<Category, 'id'>,
   ): Promise<Category> {
-    return this.categoryRepository.create(category);
+    if (!category.name || category.name.trim().length === 0) {
+      throw new HttpErrors.BadRequest('Category name is required');
+    }
+    return this.categoryRepository.create({
+      ...category,
+      name: category.name.trim(),
+    });
   }
 
   @LogExecution()
@@ -114,7 +122,11 @@ export class CategoryController {
     @param.filter(Category, {exclude: 'where'})
     filter?: FilterExcludingWhere<Category>,
   ): Promise<Category> {
-    return this.categoryRepository.findById(id, filter);
+    const category = await this.categoryRepository.findById(id, filter);
+    if (!category) {
+      throw new HttpErrors.NotFound(`Category with id ${id} not found`);
+    }
+    return category;
   }
 
   @LogExecution()
@@ -164,7 +176,7 @@ export class CategoryController {
       'application/json': {
         schema: {
           type: 'array',
-          items: {type: 'object'}, // Or use a Book schema if you define one locally for typing
+          items: {type: 'object'},
         },
       },
     },
@@ -173,9 +185,16 @@ export class CategoryController {
     @param.path.number('id') id: number,
   ): Promise<any[]> {
     await this.categoryRepository.findById(id);
-    const response = await axios.get(
-      `http://localhost:3001/books?categoryId=${id}`,
-    );
-    return response.data;
+    try {
+      const response = await axios.get(
+        `http://localhost:3001/books?categoryId=${encodeURIComponent(id)}`,
+        {timeout: 5000},
+      );
+      return response.data as any[];
+    } catch (error) {
+      throw new HttpErrors.BadGateway(
+        'Error fetching books from external service',
+      );
+    }
   }
 }

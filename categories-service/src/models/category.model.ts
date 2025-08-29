@@ -11,9 +11,13 @@ export class Category extends Entity {
   @property({
     type: 'string',
     required: true,
+    jsonSchema: {
+      minLength: 1,
+      maxLength: 200,
+      pattern: '^[a-zA-Z0-9 ]+$',
+    },
   })
   name: string;
-
 
   constructor(data?: Partial<Category>) {
     super(data);

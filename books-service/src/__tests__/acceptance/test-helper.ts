@@ -4,6 +4,8 @@ import {
   givenHttpServerConfig,
   Client,
 } from '@loopback/testlab';
+import * as path from 'path';
+import * as fs from 'fs';
 
 export async function setupApplication(): Promise<AppWithClient> {
   const restConfig = givenHttpServerConfig({
@@ -17,6 +19,10 @@ export async function setupApplication(): Promise<AppWithClient> {
   const app = new BooksServiceApplication({
     rest: restConfig,
   });
+const testDbPath = path.join(__dirname, '../../../src/datasources/db.test.json');
+  const testDbConfig = JSON.parse(fs.readFileSync(testDbPath, 'utf-8'));
+
+  app.bind('datasources.config.db').to(testDbConfig);
 
   await app.boot();
   await app.start();
