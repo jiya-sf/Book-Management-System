@@ -1,5 +1,3 @@
-{
-  "exit": true,
-  "recursive": true,
-  "require": "source-map-support/register"
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:5885ee6bbedba73ebd9874d07e9357d5da8cd6b9d4d2caf1781c198c0fbdc6dd
+size 84

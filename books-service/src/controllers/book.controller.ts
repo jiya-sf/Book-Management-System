@@ -22,7 +22,7 @@ import {BookRepository} from '../repositories/book.repository';
 import axios from 'axios';
 import {LogExecution} from '../decorators/log.decorator';
 import {authenticate} from '@loopback/authentication';
-
+import { BookBulkService } from '../service/bulk.service';
 @authenticate('jwt')
 export class BookController {
   constructor(
@@ -290,4 +290,37 @@ export class BookController {
 
     return details;
   }
+
+  @post('/books/bulk-upload')
+ async bulkUpload(
+  @requestBody({
+    description: 'Bulk upload of books with author/genre strings',
+    required: true,
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              title: {type: 'string'},
+              pubDate: {type: 'string'},
+              isbn: {type: 'number'},
+              bookType: {type: 'string'},
+              author: {type: 'string'},
+              genre: {type: 'string'},
+            },
+          },
+        },
+      },
+    },
+  })
+  books: any[],
+) {
+  const bulkService = new BookBulkService(this.bookRepository);
+  return bulkService.bulkUpload(books);
 }
+
+
+}
+

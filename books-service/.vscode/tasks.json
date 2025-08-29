@@ -1,29 +1,3 @@
-{
-  // See https://go.microsoft.com/fwlink/?LinkId=733558
-  // for the documentation about the tasks.json format
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "Watch and Compile Project",
-      "type": "shell",
-      "command": "npm",
-      "args": ["--silent", "run", "build:watch"],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
-      "problemMatcher": "$tsc-watch"
-    },
-    {
-      "label": "Build, Test and Lint",
-      "type": "shell",
-      "command": "npm",
-      "args": ["--silent", "run", "test:dev"],
-      "group": {
-        "kind": "test",
-        "isDefault": true
-      },
-      "problemMatcher": ["$tsc", "$eslint-compact", "$eslint-stylish"]
-    }
-  ]
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:10530b833d549cad3f8f13d7b7de2e4d3fc5818b604637dc57f064bd81de99f6
+size 714
