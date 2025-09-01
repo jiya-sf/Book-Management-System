@@ -19,15 +19,17 @@ import {
 } from '@loopback/rest';
 import {Author} from '../models/author.model';
 import {AuthorRepository} from '../repositories/author.repository';
-import axios from 'axios';
 import {LogExecution} from '../decorators/log.decorator';
 import {authenticate} from '@loopback/authentication';
+import {BookRepository} from '../repositories/book.repository';
+import {Book} from '../models/book.model';
 
 @authenticate('jwt')
 export class AuthorController {
   constructor(
     @repository(AuthorRepository)
     public authorRepository: AuthorRepository,
+    @repository(BookRepository) public bookRepository: BookRepository,
   ) {}
 
   @LogExecution()
@@ -169,15 +171,10 @@ export class AuthorController {
       },
     },
   })
-  async getBooksForAuthor(@param.path.number('id') id: number): Promise<{ bookId: number; title: string; authorId: number }[]> {
-    await this.authorRepository.findById(id);
-    try {
-      const response = await axios.get<{ bookId: number; title: string; authorId: number }[]>(
-      `http://localhost:3001/books?authorId=${id}`
-      );
-      return response.data;
-    } catch (error) { 
-      return [];
-    }
+  async getBooksForAuthor(
+    @param.path.number('id') id: number,
+  ): Promise<Book[]> {
+    await this.authorRepository.findById(id); // ensures author exists
+    return this.bookRepository.find({where: {authorId: id}});
   }
 }

@@ -3,6 +3,8 @@ import {repository} from '@loopback/repository';
 import {UserRepository} from '../repositories';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 export class AuthController {
   constructor(
@@ -30,19 +32,23 @@ export class AuthController {
         },
       },
     })
-    newUser: { email: string; password: string; role: string },
-
-    // newUser: Omit<User, 'id'>,
+    newUser: {
+      email: string;
+      password: string;
+      role: string;
+    },
   ): Promise<{message: string}> {
     const existing = await this.userRepository.findOne({
       where: {email: newUser.email},
+      fields: {id: true},
     });
     if (existing) {
       throw new HttpErrors.BadRequest('Email already registered');
     }
 
     //hash pwd
-    const hashedPassword = await bcrypt.hash(newUser.password, 10);
+    const rounds = Number(process.env.BCRYPT_SALT_ROUNDS);
+    const hashedPassword = await bcrypt.hash(newUser.password, rounds);
     await this.userRepository.create({
       ...newUser,
       password: hashedPassword,
@@ -98,7 +104,7 @@ export class AuthController {
         email: user.email,
         role: user.role,
       },
-      process.env.JWT_SECRET || 'changeme'
+      process.env.JWT_SECRET || 'changeme',
     );
     console.log(token);
     return {token};

@@ -22,12 +22,32 @@ import {BookRepository} from '../repositories/book.repository';
 import axios from 'axios';
 import {LogExecution} from '../decorators/log.decorator';
 import {authenticate} from '@loopback/authentication';
-import { BookBulkService } from '../service/bulk.service';
+import {BookBulkService} from '../service/bulk.service';
+import {AuthorRepository} from '../repositories/author.repository';
+import {CategoryRepository} from '../repositories/category.repository';
+
+interface BookWithDetails extends Book {
+  author?: string;
+  genre?: string;
+}
+interface BookUpload {
+  title: string;
+  pubDate: string;
+  isbn: number;
+  bookType: 'ebook' | 'printed';
+  author: string;
+  genre: string;
+}
+
 @authenticate('jwt')
 export class BookController {
   constructor(
     @repository(BookRepository)
     public bookRepository: BookRepository,
+    @repository(AuthorRepository) 
+    public authorRepository: AuthorRepository,
+    @repository(CategoryRepository)
+    public categoryRepository: CategoryRepository,
   ) {}
 
   @LogExecution()
@@ -57,18 +77,17 @@ export class BookController {
               pubDate: {type: 'string'},
               isbn: {type: 'number'},
               bookType: {type: 'string', enum: ['ebook', 'printed']},
-              author: {type: 'string'}, 
-              genre: {type: 'string'}, 
+              author: {type: 'string'},
+              genre: {type: 'string'},
             },
-            additionalProperties: true, 
+            additionalProperties: true,
           },
         },
       },
     })
-    bookData: any,
+    bookData: BookUpload,
   ): Promise<Book> {
     const authorId = await this.getAuthorIdByName(bookData.author);
-
     const categoryId = await this.getCategoryIdByName(bookData.genre);
 
     const bookToCreate: Partial<Book> = {
@@ -84,44 +103,20 @@ export class BookController {
     return this.bookRepository.create(bookToCreate);
   }
 
-  private async getAuthorIdByName(name: string): Promise<number> {
-    try {
-      const searchUrl = `http://localhost:3002/authors?filter=${encodeURIComponent(JSON.stringify({where: {name}}))}`;
-          type AuthorResponse = { id: number; name: string }[];
-      const searchRes = await axios.get<AuthorResponse>(searchUrl);
-
-      if (searchRes.data.length > 0) {
-        return searchRes.data[0].id;
-      }
-
-      const createRes = await axios.post<{ id: number }>('http://localhost:3002/authors', {
-        name,
-      });
-      return createRes.data.id;
-    } catch (err) {
-      console.error('Error resolving author ID:', err.message);
-      throw new Error('Failed to resolve or create author');
-    }
+    private async getAuthorIdByName(name: string): Promise<number> {
+    const authors = await this.authorRepository.find({where: {name}});
+    if (authors.length > 0) return authors[0].id!;
+    const newAuthor = await this.authorRepository.create({name});
+    return newAuthor.id!;
   }
 
-  private async getCategoryIdByName(genre: string): Promise<number> {
-    try {
-      const searchUrl = `http://localhost:3003/categories?filter=${encodeURIComponent(JSON.stringify({where: {genre}}))}`;
-      type CategoryResponse = { id: number; genre: string }[];
-      const searchRes = await axios.get<CategoryResponse>(searchUrl);
-
-      if (searchRes.data.length > 0) {
-        return searchRes.data[0].id;
-      }
-      const createRes = await axios.post<{ id: number }>('http://localhost:3003/categories', {
-        genre,
-      });
-      return createRes.data.id;
-    } catch (err) {
-      console.error('Error resolving category ID:', err.message);
-      throw new Error('Failed to resolve or create category');
-    }
+  private async getCategoryIdByName(name: string): Promise<number> {
+    const categories = await this.categoryRepository.find({where: {name}});
+    if (categories.length > 0) return categories[0].id!;
+    const newCategory = await this.categoryRepository.create({name});
+    return newCategory.id!;
   }
+
 
   @LogExecution()
   @get('/books/count')
@@ -146,35 +141,35 @@ export class BookController {
       },
     },
   })
-  async find(@param.filter(Book) filter?: Filter<Book>): Promise<any[]> {
+  async find(
+    @param.filter(Book) filter?: Filter<Book>,
+  ): Promise<BookWithDetails[]> {
     const books = await this.bookRepository.find(filter);
 
-    const results = await Promise.all(
+    return Promise.all(
       books.map(async book => {
-        let authorName = null;
-        let categoryName = null;
+        let author: string | undefined;
+        let category: string | undefined;
         try {
-          const authorResp = await axios.get<{ name: string }>(
+          const authorResp = await axios.get<{name: string}>(
             `http://localhost:3002/authors/${book.authorId}`,
           );
-          authorName = authorResp.data?.name || null;
+          author = authorResp.data?.name ?? undefined;
         } catch {}
 
         try {
-          const categoryResp = await axios.get<{ genre: string }>(
+          const categoryResp = await axios.get<{genre: string}>(
             `http://localhost:3003/categories/${book.categoryId}`,
           );
-          categoryName = categoryResp.data?.genre || null;
+          category = categoryResp.data?.genre ?? undefined;
         } catch {}
-        return {
+        return Object.assign(new Book(), {
           ...book,
-          author: authorName,
-          genre: categoryName,
-        };
+          author,
+          category,
+        }) as BookWithDetails;
       }),
     );
-
-    return results;
   }
 
   @LogExecution()
@@ -264,7 +259,9 @@ export class BookController {
       },
     },
   })
-  async findByIdWithDetails(@param.path.number('id') id: number): Promise<any> {
+  async findByIdWithDetails(
+    @param.path.number('id') id: number,
+  ): Promise<BookWithDetails> {
     //fetching book
     const book = await this.bookRepository.findById(id);
     const details: any = {...book};
@@ -292,35 +289,46 @@ export class BookController {
   }
 
   @post('/books/bulk-upload')
- async bulkUpload(
-  @requestBody({
-    description: 'Bulk upload of books with author/genre strings',
-    required: true,
-    content: {
-      'application/json': {
-        schema: {
-          type: 'array',
-          items: {
-            type: 'object',
-            properties: {
-              title: {type: 'string'},
-              pubDate: {type: 'string'},
-              isbn: {type: 'number'},
-              bookType: {type: 'string'},
-              author: {type: 'string'},
-              genre: {type: 'string'},
+  async bulkUpload(
+    @requestBody({
+      description: 'Bulk upload of books with author/genre strings',
+      required: true,
+      content: {
+        'application/json': {
+          schema: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                title: {type: 'string'},
+                pubDate: {type: 'string'},
+                isbn: {type: 'number'},
+                bookType: {type: 'string'},
+                author: {type: 'string'},
+                genre: {type: 'string'},
+              },
             },
           },
         },
       },
-    },
-  })
-  books: any[],
-) {
-  const bulkService = new BookBulkService(this.bookRepository);
-  return bulkService.bulkUpload(books);
+    })
+    books: Partial<Book>[],
+  ) {
+    const booksToCreate: Partial<Book>[] = await Promise.all(
+      books.map(async book => {
+        const authorId = await this.getAuthorIdByName(book.author as string);
+        const categoryId = await this.getCategoryIdByName(book.genre as string);
+
+        return {
+          title: book.title,
+          pubDate: book.pubDate,
+          isbn: book.isbn,
+          bookType: book.bookType,
+          authorId,
+          categoryId,
+        } as Partial<Book>;
+      }),
+    );
+    return this.bookRepository.createAll(booksToCreate);
+  }
 }
-
-
-}
-

@@ -20,14 +20,17 @@ import {
 } from '@loopback/rest';
 import {Category} from '../models/category.model';
 import {CategoryRepository} from '../repositories/category.repository';
-import axios from 'axios';
 import {LogExecution} from '../decorators/log.decorator';
+import {BookRepository} from '../repositories/book.repository';
+import {Book} from '../models/book.model';
 
 // @authenticate('jwt')
 export class CategoryController {
   constructor(
     @repository(CategoryRepository)
     public categoryRepository: CategoryRepository,
+    @repository(BookRepository)
+    public bookRepository: BookRepository,
   ) {}
 
   @LogExecution()
@@ -183,18 +186,8 @@ export class CategoryController {
   })
   async getBooksForCategory(
     @param.path.number('id') id: number,
-  ): Promise<any[]> {
+  ): Promise<Book[]> {
     await this.categoryRepository.findById(id);
-    try {
-      const response = await axios.get(
-        `http://localhost:3001/books?categoryId=${encodeURIComponent(id)}`,
-        {timeout: 5000},
-      );
-      return response.data as any[];
-    } catch (error) {
-      throw new HttpErrors.BadGateway(
-        'Error fetching books from external service',
-      );
-    }
+    return this.bookRepository.find({where: {categoryId: id}});
   }
 }
