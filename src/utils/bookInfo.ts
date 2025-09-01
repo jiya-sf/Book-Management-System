@@ -4,22 +4,22 @@ export interface NewBookData {
   isbn: number;
   pubDate: string;
   genre: string;
-  bookType: 'ebook' | 'printed';
+  bookType: "ebook" | "printed";
 }
 
-export interface BookData extends NewBookData{
-    id:number;
+export interface BookData extends NewBookData {
+  id: number;
 }
 
-export interface Author{
-    id:string;
-    name:string;
-    bookIds?:string[];
+export interface Author {
+  id: string;
+  name: string;
+  bookIds?: string[];
 }
-export interface Category{
-    id:string;
-    genre:string;
-    description?:string;
+export interface Category {
+  id: string;
+  genre: string;
+  description?: string;
 }
 export class Book implements NewBookData {
   title: string;
@@ -27,7 +27,7 @@ export class Book implements NewBookData {
   isbn: number;
   pubDate: string;
   genre: string;
-  bookType: 'ebook' | 'printed';
+  bookType: "ebook" | "printed";
 
   constructor(
     title: string,
@@ -35,7 +35,7 @@ export class Book implements NewBookData {
     isbn: number,
     pubDate: string,
     genre: string,
-    bookType: 'ebook' | 'printed'
+    bookType: "ebook" | "printed",
   ) {
     this.title = title;
     this.author = author;
@@ -46,15 +46,15 @@ export class Book implements NewBookData {
   }
 }
 
-export class calcBookAge{
-  static calc(pubDate:string):number{
-    const pub=new Date(pubDate);
-    const now =new Date();
-    return now.getFullYear()-pub.getFullYear();
+export class calcBookAge {
+  static calc(pubDate: string): number {
+    const pub = new Date(pubDate);
+    const now = new Date();
+    return now.getFullYear() - pub.getFullYear();
   }
 }
-export class discount{
-  static discountPrice(price:number,percent:number):number{
-    return price-(price*percent)/100;
+export class discount {
+  static discountPrice(price: number, percent: number): number {
+    return price - (price * percent) / 100;
   }
 }

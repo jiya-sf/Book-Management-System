@@ -1,4 +1,3 @@
-// src/components/BookList.tsx
 import { useEffect, useState } from "react";
 import type { BookData } from "../utils/bookInfo";
 import { calcBookAge } from "../utils/bookInfo";

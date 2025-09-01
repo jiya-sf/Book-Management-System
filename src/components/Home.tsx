@@ -13,8 +13,8 @@ function Home() {
         👀 View your entire library
         <br />
         ✏️ Edit or ❌ Delete entries
-      </p>   
-       </div> 
+      </p>
+    </div>
   );
 }
 
