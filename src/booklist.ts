@@ -1,4 +1,4 @@
-import { Book, BookData,calcBookAge } from "./bookInfo.js";
+import { Book, BookData, calcBookAge } from "./bookInfo.js";
 import { BookService } from "./bookService.js";
 
 const bookService = new BookService();
@@ -7,7 +7,7 @@ const container = document.getElementById("book-box") as HTMLElement;
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     const books: BookData[] = await bookService.getBooks();
-    
+
     if (books.length === 0) {
       container.innerHTML = "<p class='text-gray-600'>No books added yet.</p>";
       return;
@@ -24,13 +24,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       );
 
       const bookCard = document.createElement("div");
-      bookCard.className = "w-80 p-6 rounded-lg shadow-lg bg-white/30 backdrop-blur-sm";
+      bookCard.className =
+        "w-80 p-6 rounded-lg shadow-lg bg-white/30 backdrop-blur-sm";
 
       bookCard.innerHTML = `
         <h5 class="mb-2 text-xl font-bold text-white">${book.title}</h5>
         <p class="mb-1 text-gray-800">Author: ${book.author}</p>
         <p class="mb-1 text-gray-800">ISBN: ${book.isbn}</p>
-<p class="mb-1 text-gray-800">Published: ${book.pubDate} (${calcBookAge.calc(book.pubDate)} years ago)</p>
+        <p class="mb-1 text-gray-800">Published: ${
+          book.pubDate
+        } (${calcBookAge.calc(book.pubDate)} years ago)</p>
         <p class="mb-4 text-gray-800">Genre: ${book.genre}</p>
         <p class="mb-4 text-gray-800">Format: ${book.bookType}</p>
 
